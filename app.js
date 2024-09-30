@@ -8,16 +8,23 @@ const laporan = require('./models/laporan');
 
 const app = express();
 
+// Konfigurasi CORS (default, mengizinkan semua domain)
+app.use(cors())// Jika ingin menggunakan opsi CORS terbatas, aktifkan yang ini:
+const corsOptions = { // Ubah dengan domain yang diizinkan
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Metode HTTP yang diizinkan
+  allowedHeaders: ['Content-Type', 'Authorization'], // Header yang diizinkan
+};
+app.use(cors(corsOptions)); // Gunakan ini jika ingin membatasi domain
+
 // Middleware
-app.use(cors()); // Mengizinkan CORS (opsional, bisa disesuaikan dengan kebutuhan)
 app.use(bodyParser.json()); // Parsing JSON request
 app.use(bodyParser.urlencoded({ extended: true })); // Parsing URL-encoded request
 
 // Routes
 app.use('/api', userRoutes); // Semua route user akan diawali dengan '/api'
-app.use('/api', laporanRoutes); // Semua route
+app.use('/api', laporanRoutes); // Semua route laporan juga diawali dengan '/api'
 
-// Route untuk halaman utama (bisa diubah sesuai kebutuhan)
+// Route untuk halaman utama
 app.get('/', (req, res) => {
   res.send('Welcome to the User Management API');
 });
@@ -42,4 +49,4 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-});
+}
