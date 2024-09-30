@@ -11,7 +11,7 @@ const app = express();
 // Konfigurasi CORS (default, mengizinkan semua domain)
 app.use(cors())// Jika ingin menggunakan opsi CORS terbatas, aktifkan yang ini:
 const corsOptions = { // Ubah dengan domain yang diizinkan
-  origin: ' https://renisanawasena.online',
+  origin: 'https://renisanawasena.online',
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Metode HTTP yang diizinkan
   allowedHeaders: ['Content-Type', 'Authorization'], // Header yang diizinkan
 };
