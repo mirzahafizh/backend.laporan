@@ -9,12 +9,16 @@ const app = express();
 
 // CORS Configuration (allow specific domain)
 const corsOptions = {
-  origin: 'https://renisanawasena.online', // Specify the allowed domain
+  origin: [
+    'https://renisanawasena.online', // Production domain
+    'http://localhost:5173' // Local development domain
+  ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
   allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
 };
-app.use(cors(corsOptions)); // Enable CORS with options
 
+// Enable CORS with options
+app.use(cors(corsOptions));
 
 // Middleware
 app.use(bodyParser.json()); // Parse JSON requests
