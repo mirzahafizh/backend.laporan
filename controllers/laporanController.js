@@ -60,6 +60,7 @@ exports.createLaporan = async (req, res) => {
 };
 
 
+
 // Get Semua Laporan
 exports.getAllLaporan = async (req, res) => {
   try {

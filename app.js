@@ -15,6 +15,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions)); // Enable CORS with options
 
+
 // Middleware
 app.use(bodyParser.json()); // Parse JSON requests
 app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded requests
