@@ -5,36 +5,32 @@ const imagekit = require('../config/imageKit'); // pastikan konfigurasi sesuai d
 exports.createLaporan = async (req, res) => {
     try {
         const { vendor, date, delivered_by, username, no_resi } = req.body;
-        // Retrieve arrays from the request body
-        const nama_barang = req.body.nama_barang; // This should be an array
-        const part_number = req.body.part_number; // This should be an array
-        const qty = req.body.qty; // This should be an array
+        const { nama_barang, part_number, qty } = req.body;
 
         // Validate input fields
         if (!vendor || !date || !delivered_by || !username || !no_resi || !nama_barang || !part_number || !qty) {
             return res.status(400).json({ message: 'All fields are required.' });
         }
 
-        // Ensure that arrays are of the same length
         if (nama_barang.length !== part_number.length || nama_barang.length !== qty.length) {
             return res.status(400).json({ message: 'Mismatch in the number of items.' });
         }
 
-        // Upload files to ImageKit
-        const files = req.files; // This should be an array of uploaded files
+        const files = req.files; // Array of uploaded files
         let imageUrls = [];
 
         if (files && files.length > 0) {
-            // Upload each file to ImageKit
-            for (const file of files) {
-                const uploadResponse = await imagekit.upload({
-                    file: file.buffer.toString('base64'), // Buffer file yang diupload
+            // Upload files in parallel using Promise.all
+            const uploadPromises = files.map(file =>
+                imagekit.upload({
+                    file: file.buffer.toString('base64'),
                     fileName: file.originalname,
-                    folder: '/laporan/' // Specify the folder here
-                });
+                    folder: '/laporan/'
+                })
+            );
 
-                imageUrls.push(uploadResponse.url); // Store each uploaded file's URL
-            }
+            const uploadResponses = await Promise.all(uploadPromises);
+            imageUrls = uploadResponses.map(response => response.url);
         }
 
         // Save laporan data to database
@@ -42,12 +38,12 @@ exports.createLaporan = async (req, res) => {
             vendor,
             date,
             delivered_by,
-            fileUpload: JSON.stringify(imageUrls), // Store as JSON string for multiple URLs
+            fileUpload: JSON.stringify(imageUrls),
             username,
             no_resi,
-            nama_barang: JSON.stringify(nama_barang), // Store as JSON string for multiple items
-            part_number: JSON.stringify(part_number), // Store as JSON string for multiple items
-            qty: JSON.stringify(qty) // Store as JSON string for multiple items
+            nama_barang: JSON.stringify(nama_barang),
+            part_number: JSON.stringify(part_number),
+            qty: JSON.stringify(qty)
         });
 
         res.status(201).json({
@@ -55,7 +51,7 @@ exports.createLaporan = async (req, res) => {
             data: newLaporan
         });
     } catch (error) {
-        console.error('Error creating laporan:', error); // Log error for debugging
+        console.error('Error creating laporan:', error);
         res.status(500).json({
             message: 'Error creating laporan',
             error: error.message
