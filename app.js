@@ -11,7 +11,7 @@ const app = express();
 const corsOptions = {
   origin: [
     'https://renisanawasena.online', // Production domain
-    'http://localhost:5173' // Local development domain
+    'http://localhost:5173','https://renisa-report-web.vercel.app' // Local development domain
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
   allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
